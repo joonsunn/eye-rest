@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import UserNotifications
 @testable import eye_rest
 
 @MainActor
@@ -68,5 +69,12 @@ struct EyeRestSettingsTests {
         #expect(settings.breakDuration == 5)
         let reloaded = EyeRestSettings(defaults: defaults)
         #expect(reloaded.workDuration == 20 * 60)
+    }
+
+    @Test("status lines describe each permission state")
+    func statusLines() {
+        #expect(EyeRestNotifications.statusLine(for: .authorized) == "Notifications: on")
+        #expect(EyeRestNotifications.statusLine(for: .denied).contains("enable in Settings"))
+        #expect(EyeRestNotifications.statusLine(for: .notDetermined).contains("answer the prompt"))
     }
 }

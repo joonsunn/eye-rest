@@ -13,15 +13,22 @@ enum EyeRestNotifications {
 
     /// One-line permission state for the menu, e.g. "authorized", "denied".
     static func statusLine() async -> String {
-        let settings = await UNUserNotificationCenter.current().notificationSettings()
-        let state: String
-        switch settings.authorizationStatus {
-        case .authorized, .provisional, .ephemeral: state = "on"
-        case .denied: state = "off — enable in Settings"
-        case .notDetermined: state = "not asked yet — relaunch"
-        @unknown default: state = "unknown"
+        statusLine(for: await authorizationState())
+    }
+
+    static func authorizationState() async -> UNAuthorizationStatus {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+    }
+
+    static func statusLine(for state: UNAuthorizationStatus) -> String {
+        let detail: String
+        switch state {
+        case .authorized, .provisional, .ephemeral: detail = "on"
+        case .denied: detail = "off — enable in Settings"
+        case .notDetermined: detail = "not asked yet — answer the prompt"
+        @unknown default: detail = "unknown"
         }
-        return "Notifications: \(state)"
+        return "Notifications: \(detail)"
     }
 
     static func openSettingsPane() {

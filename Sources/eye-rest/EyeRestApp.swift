@@ -47,6 +47,11 @@ struct EyeRestApp: App {
             }
             Text(notifyStatus)
                 .task {
+                    // Init-time ask can fire before the app is ready to show
+                    // the prompt, so retry here where the user is looking.
+                    if await EyeRestNotifications.authorizationState() == .notDetermined {
+                        EyeRestNotifications.requestAuthorization()
+                    }
                     notifyStatus = await EyeRestNotifications.statusLine()
                 }
             Menu("Work length") {
