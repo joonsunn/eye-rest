@@ -77,4 +77,23 @@ struct EyeRestSettingsTests {
         #expect(EyeRestNotifications.statusLine(for: .denied).contains("enable in Settings"))
         #expect(EyeRestNotifications.statusLine(for: .notDetermined).contains("answer the prompt"))
     }
+
+    @Test("sound resolve follows system pick, explicit choice, fallback")
+    func soundResolve() {
+        let system = EyeRestNotifications.resolveSound(
+            preference: "system", systemBeepPath: "/System/Library/Sounds/Glass.aiff")
+        #expect(system != UNNotificationSound.default)
+        #expect(EyeRestNotifications.resolveSound(preference: "Ping") != UNNotificationSound.default)
+        #expect(EyeRestNotifications.resolveSound(preference: "Nope") == UNNotificationSound.default)
+        #expect(EyeRestNotifications.resolveSound(preference: "system", systemBeepPath: "/System/Library/Sounds/Nope.aiff") == UNNotificationSound.default)
+    }
+
+    @Test("ping sound choice persists")
+    func pingSoundPersists() {
+        let defaults = freshDefaults()
+        let first = EyeRestSettings(defaults: defaults)
+        #expect(first.pingSound == "system")
+        first.setPingSound("Glass")
+        #expect(EyeRestSettings(defaults: defaults).pingSound == "Glass")
+    }
 }

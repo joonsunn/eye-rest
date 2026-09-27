@@ -10,7 +10,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "eye-rest",
-            exclude: ["Info.plist", "AppIcon.icns"]
+            exclude: ["Info.plist", "AppIcon.icns", "Sounds"]
         ),
         .testTarget(
             name: "eye-restTests",

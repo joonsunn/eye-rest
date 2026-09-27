@@ -37,23 +37,46 @@ enum EyeRestNotifications {
         }
     }
 
-    static func notifyBreakStart() {
-        post(title: "Time for an eye break", body: "Look 20 ft away for 20 seconds.")
+    static func notifyBreakStart(soundPreference: String = "system") {
+        post(title: "Time for an eye break", body: "Look 20 ft away for 20 seconds.", soundPreference: soundPreference)
     }
 
-    static func notifyBreakEnd() {
-        post(title: "Break over", body: "Back to work.")
+    static func notifyBreakEnd(soundPreference: String = "system") {
+        post(title: "Break over", body: "Back to work.", soundPreference: soundPreference)
     }
 
-    static func notifyTest() {
-        post(title: "Eye Rest test", body: "Notifications reach you. Break pings sound like this.")
+    static func notifyTest(soundPreference: String = "system") {
+        post(title: "Eye Rest test", body: "Notifications reach you. Break pings sound like this.", soundPreference: soundPreference)
     }
 
-    private static func post(title: String, body: String) {
+    /// Names only, never paths. Files are copied from the build machine's own
+    /// /System/Library/Sounds into Resources by make-app.sh, so the repo
+    /// carries no Apple-owned audio. Missing files fall back to default.
+    static let bundledSounds = [
+        "Basso", "Blow", "Bottle", "Frog", "Funk", "Glass", "Hero",
+        "Morse", "Ping", "Pop", "Purr", "Sosumi", "Submarine", "Tink",
+    ]
+
+    /// Resolve a ping preference to a playable sound. "system" follows the
+    /// NSGlobalDomain beep pick live. Anything unresolvable falls back to default.
+    static func resolveSound(preference: String, systemBeepPath: String? = nil) -> UNNotificationSound {
+        var name = preference
+        if name == "system" {
+            let path = systemBeepPath
+                ?? UserDefaults.standard.persistentDomain(forName: "NSGlobalDomain")?["com.apple.sound.beep.sound"] as? String
+            name = (((path ?? "") as NSString).lastPathComponent as NSString).deletingPathExtension
+        }
+        if bundledSounds.contains(name) {
+            return UNNotificationSound(named: UNNotificationSoundName("\(name).aiff"))
+        }
+        return .default
+    }
+
+    private static func post(title: String, body: String, soundPreference: String) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
-        content.sound = .default
+        content.sound = resolveSound(preference: soundPreference)
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,

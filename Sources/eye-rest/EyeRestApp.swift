@@ -11,12 +11,12 @@ struct EyeRestApp: App {
         let s = EyeRestSettings()
         s.applyEnvironmentOverrides()
         let t = EyeRestTimer(workDuration: s.workDuration, breakDuration: s.breakDuration)
-        t.onPhaseChange = { phase in
+        t.onPhaseChange = { [s] phase in
             switch phase {
             case .work:
-                EyeRestNotifications.notifyBreakEnd()
+                EyeRestNotifications.notifyBreakEnd(soundPreference: s.pingSound)
             case .onBreak:
-                EyeRestNotifications.notifyBreakStart()
+                EyeRestNotifications.notifyBreakStart(soundPreference: s.pingSound)
             }
         }
         _timer = StateObject(wrappedValue: t)
@@ -40,7 +40,17 @@ struct EyeRestApp: App {
             }
             .disabled(timer.phase != .onBreak)
             Button("Send test notification") {
-                EyeRestNotifications.notifyTest()
+                EyeRestNotifications.notifyTest(soundPreference: settings.pingSound)
+            }
+            Menu("Ping sound") {
+                Button("Follow system \(settings.pingSound == "system" ? "✓" : "")") {
+                    settings.setPingSound("system")
+                }
+                ForEach(EyeRestNotifications.bundledSounds, id: \.self) { name in
+                    Button("\(name) \(settings.pingSound == name ? "✓" : "")") {
+                        settings.setPingSound(name)
+                    }
+                }
             }
             Button("Open Notification Settings") {
                 EyeRestNotifications.openSettingsPane()
