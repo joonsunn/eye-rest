@@ -4,9 +4,12 @@ import SwiftUI
 @main
 struct EyeRestApp: App {
     @StateObject private var timer: EyeRestTimer
+    @StateObject private var settings: EyeRestSettings
 
     init() {
-        let t = EyeRestTimer()
+        let s = EyeRestSettings()
+        s.applyEnvironmentOverrides()
+        let t = EyeRestTimer(workDuration: s.workDuration, breakDuration: s.breakDuration)
         t.onPhaseChange = { phase in
             switch phase {
             case .work:
@@ -16,6 +19,7 @@ struct EyeRestApp: App {
             }
         }
         _timer = StateObject(wrappedValue: t)
+        _settings = StateObject(wrappedValue: s)
         EyeRestNotifications.requestAuthorization()
     }
 
@@ -26,10 +30,30 @@ struct EyeRestApp: App {
             Button(timer.isPaused ? "Resume" : "Pause") {
                 timer.togglePause()
             }
+            Button("Reset timer") {
+                timer.reset()
+            }
+            .keyboardShortcut("r")
             Button("Skip break") {
                 timer.skipBreak()
             }
             .disabled(timer.phase != .onBreak)
+            Menu("Work length") {
+                ForEach(EyeRestSettings.workPresets, id: \.self) { minutes in
+                    Button("\(minutes) min \(Int(settings.workDuration) == minutes * 60 ? "✓" : "")") {
+                        settings.setWorkMinutes(minutes)
+                        timer.updateDurations(work: settings.workDuration, breakDuration: settings.breakDuration)
+                    }
+                }
+            }
+            Menu("Break length") {
+                ForEach(EyeRestSettings.breakPresets, id: \.self) { seconds in
+                    Button("\(seconds) sec \(Int(settings.breakDuration) == seconds ? "✓" : "")") {
+                        settings.setBreakSeconds(seconds)
+                        timer.updateDurations(work: settings.workDuration, breakDuration: settings.breakDuration)
+                    }
+                }
+            }
             Divider()
             Button("Quit eye-rest") {
                 NSApplication.shared.terminate(nil)

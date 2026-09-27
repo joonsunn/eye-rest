@@ -21,8 +21,8 @@ public final class EyeRestTimer: ObservableObject {
     @Published public private(set) var timeRemaining: TimeInterval
     @Published public private(set) var isPaused: Bool
 
-    public let workDuration: TimeInterval
-    public let breakDuration: TimeInterval
+    public private(set) var workDuration: TimeInterval
+    public private(set) var breakDuration: TimeInterval
     public var onPhaseChange: ((EyeRestPhase) -> Void)?
 
     private var lastTick: Date
@@ -110,6 +110,20 @@ public final class EyeRestTimer: ObservableObject {
         } else {
             pause()
         }
+    }
+
+    /// Restart a fresh work cycle from any phase. No notification fires.
+    public func reset() {
+        phase = .work
+        timeRemaining = workDuration
+        lastTick = now()
+    }
+
+    /// Replace durations (clamped) and restart a fresh work cycle.
+    public func updateDurations(work: TimeInterval, breakDuration: TimeInterval) {
+        self.workDuration = min(max(work, 60), 4 * 60 * 60)
+        self.breakDuration = min(max(breakDuration, 5), 30 * 60)
+        reset()
     }
 
     /// Skip the current break and restart the work cycle. No-op during work.
