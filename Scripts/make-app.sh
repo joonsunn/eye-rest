@@ -1,0 +1,12 @@
+#!/bin/sh
+# Assemble EyeRest.app from a release build. UNUserNotificationCenter needs
+# a real bundle, raw .build binaries crash with bundleProxyForCurrentProcess nil.
+set -eu
+cd "$(dirname "$0")/.."
+swift build -c release
+APP=".build/EyeRest.app"
+rm -rf "$APP"
+mkdir -p "$APP/Contents/MacOS"
+cp ".build/release/eye-rest" "$APP/Contents/MacOS/eye-rest"
+cp "Sources/eye-rest/Info.plist" "$APP/Contents/Info.plist"
+echo "Built $APP — run: open $APP"
