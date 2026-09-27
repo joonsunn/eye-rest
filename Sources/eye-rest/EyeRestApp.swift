@@ -14,7 +14,7 @@ struct EyeRestApp: App {
         t.onPhaseChange = { [s] phase in
             switch phase {
             case .work:
-                EyeRestNotifications.notifyBreakEnd(soundPreference: s.pingSound)
+                EyeRestNotifications.notifyBreakEnd(soundPreference: s.breakOverSound)
             case .onBreak:
                 EyeRestNotifications.notifyBreakStart(soundPreference: s.pingSound)
             }
@@ -49,6 +49,16 @@ struct EyeRestApp: App {
                 ForEach(EyeRestNotifications.bundledSounds, id: \.self) { name in
                     Button("\(name) \(settings.pingSound == name ? "✓" : "")") {
                         settings.setPingSound(name)
+                    }
+                }
+            }
+            Menu("Break-over sound") {
+                Button("Follow system \(settings.breakOverSound == "system" ? "✓" : "")") {
+                    settings.setBreakOverSound("system")
+                }
+                ForEach(EyeRestNotifications.bundledSounds, id: \.self) { name in
+                    Button("\(name) \(settings.breakOverSound == name ? "✓" : "")") {
+                        settings.setBreakOverSound(name)
                     }
                 }
             }

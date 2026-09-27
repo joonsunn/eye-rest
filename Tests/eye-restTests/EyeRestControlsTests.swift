@@ -96,4 +96,16 @@ struct EyeRestSettingsTests {
         first.setPingSound("Glass")
         #expect(EyeRestSettings(defaults: defaults).pingSound == "Glass")
     }
+
+    @Test("break-over sound choice persists separately")
+    func breakOverSoundPersists() {
+        let defaults = freshDefaults()
+        let first = EyeRestSettings(defaults: defaults)
+        #expect(first.breakOverSound == "system")
+        first.setPingSound("Glass")
+        first.setBreakOverSound("Ping")
+        let second = EyeRestSettings(defaults: defaults)
+        #expect(second.pingSound == "Glass")
+        #expect(second.breakOverSound == "Ping")
+    }
 }

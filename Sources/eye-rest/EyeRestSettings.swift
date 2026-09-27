@@ -8,11 +8,13 @@ public final class EyeRestSettings: ObservableObject {
     @Published public private(set) var workDuration: TimeInterval
     @Published public private(set) var breakDuration: TimeInterval
     @Published public private(set) var pingSound: String
+    @Published public private(set) var breakOverSound: String
 
     private let defaults: UserDefaults
     private static let workKey = "eye-rest.workDuration"
     private static let breakKey = "eye-rest.breakDuration"
     private static let soundKey = "eye-rest.pingSound"
+    private static let breakOverKey = "eye-rest.breakOverSound"
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -21,6 +23,7 @@ public final class EyeRestSettings: ObservableObject {
         self.workDuration = work > 0 ? work : 20 * 60
         self.breakDuration = rest > 0 ? rest : 20
         self.pingSound = defaults.string(forKey: Self.soundKey) ?? "system"
+        self.breakOverSound = defaults.string(forKey: Self.breakOverKey) ?? "system"
     }
 
     public func setWorkMinutes(_ minutes: Int) {
@@ -34,6 +37,11 @@ public final class EyeRestSettings: ObservableObject {
     public func setPingSound(_ name: String) {
         pingSound = name
         defaults.set(name, forKey: Self.soundKey)
+    }
+
+    public func setBreakOverSound(_ name: String) {
+        breakOverSound = name
+        defaults.set(name, forKey: Self.breakOverKey)
     }
 
     /// Seconds-level override for testing: EYE_REST_WORK_SECONDS / EYE_REST_BREAK_SECONDS.
