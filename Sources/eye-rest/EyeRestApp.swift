@@ -5,6 +5,7 @@ import SwiftUI
 struct EyeRestApp: App {
     @StateObject private var timer: EyeRestTimer
     @StateObject private var settings: EyeRestSettings
+    @StateObject private var launchAtLogin = EyeRestLaunchAtLogin()
     @State private var notifyStatus = "Notifications: checking…"
 
     init() {
@@ -70,6 +71,7 @@ struct EyeRestApp: App {
             }
             Text(notifyStatus)
                 .task {
+                    launchAtLogin.refresh()
                     // Init-time ask can fire before the app is ready to show
                     // the prompt, so retry here where the user is looking.
                     if await EyeRestNotifications.authorizationState() == .notDetermined {
@@ -94,6 +96,12 @@ struct EyeRestApp: App {
                 }
             }
             Divider()
+            Button("Launch at login \(launchAtLogin.isEnabled ? "✓" : "")") {
+                launchAtLogin.setEnabled(!launchAtLogin.isEnabled)
+            }
+            if let loginError = launchAtLogin.errorMessage {
+                Text("Login item failed: \(loginError)")
+            }
             Button("Quit eye-rest") {
                 NSApplication.shared.terminate(nil)
             }

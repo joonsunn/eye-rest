@@ -15,10 +15,11 @@ Menu-bar macOS app for 20-20-20 eye breaks. 20-minute countdown, break ping, 20-
 
 ## Menu
 
-Pause/Resume, Reset (Cmd+R), Skip break, Work presets 5/15/20/30/45 min, Break presets 20/30/60 sec, test notification, permission readout, Quit (Cmd+Q).
+Pause/Resume, Reset (Cmd+R), Skip break, Work presets 5/15/20/30/45 min, Break presets 20/30/60 sec, test notification, permission readout, Launch at login toggle, Quit (Cmd+Q).
 
 ## Troubleshooting
 
 - No prompt or banner: menu shows permission state; enable in System Settings, Notifications, Eye Rest. Unsigned bundles are ignored by the system, always run the script-built app.
 - Stale generic banner icon: bump `CFBundleVersion`, rebuild, `sudo rm -rf /Library/Caches/com.apple.iconservices.store`, reboot.
 - Logs: `log stream --predicate 'subsystem == "com.local.eye-rest"'`.
+- Launch at login registers in System Settings, General, Login Items, where it can also be removed. Dev rebuilds replace the bundle path and macOS may drop the entry; re-toggle or move the app to /Applications for a stable entry.
