@@ -39,8 +39,11 @@ struct EyeRestApp: App {
                 timer.skipBreak()
             }
             .disabled(timer.phase != .onBreak)
-            Button("Send test notification") {
-                EyeRestNotifications.notifyTest(soundPreference: settings.pingSound)
+            Button("Preview break ping") {
+                EyeRestNotifications.previewBreakStart(soundPreference: settings.pingSound)
+            }
+            Button("Preview break-over ping") {
+                EyeRestNotifications.previewBreakOver(soundPreference: settings.breakOverSound)
             }
             Menu("Ping sound") {
                 Button("Follow system \(settings.pingSound == "system" ? "✓" : "")") {

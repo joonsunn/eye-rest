@@ -45,8 +45,12 @@ enum EyeRestNotifications {
         post(title: "Break over", body: "Back to work.", soundPreference: soundPreference)
     }
 
-    static func notifyTest(soundPreference: String = "system") {
-        post(title: "Eye Rest test", body: "Notifications reach you. Break pings sound like this.", soundPreference: soundPreference)
+    static func previewBreakStart(soundPreference: String = "system") {
+        post(title: "Preview — break ping", body: "This is how the break ping looks and sounds.", soundPreference: soundPreference)
+    }
+
+    static func previewBreakOver(soundPreference: String = "system") {
+        post(title: "Preview — break over", body: "This is how the break-over ping looks and sounds.", soundPreference: soundPreference)
     }
 
     /// Names only, never paths. Files are copied from the build machine's own
