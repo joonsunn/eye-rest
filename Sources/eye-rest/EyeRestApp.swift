@@ -5,6 +5,7 @@ import SwiftUI
 struct EyeRestApp: App {
     @StateObject private var timer: EyeRestTimer
     @StateObject private var settings: EyeRestSettings
+    @State private var notifyStatus = "Notifications: checking…"
 
     init() {
         let s = EyeRestSettings()
@@ -41,6 +42,13 @@ struct EyeRestApp: App {
             Button("Send test notification") {
                 EyeRestNotifications.notifyTest()
             }
+            Button("Open Notification Settings") {
+                EyeRestNotifications.openSettingsPane()
+            }
+            Text(notifyStatus)
+                .task {
+                    notifyStatus = await EyeRestNotifications.statusLine()
+                }
             Menu("Work length") {
                 ForEach(EyeRestSettings.workPresets, id: \.self) { minutes in
                     Button("\(minutes) min \(Int(settings.workDuration) == minutes * 60 ? "✓" : "")") {
