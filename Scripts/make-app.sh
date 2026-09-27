@@ -9,4 +9,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 cp ".build/release/eye-rest" "$APP/Contents/MacOS/eye-rest"
 cp "Sources/eye-rest/Info.plist" "$APP/Contents/Info.plist"
+# Ad-hoc sign: usernotificationsd silently ignores unsigned bundles,
+# no prompt, no banner, status stuck notDetermined.
+codesign --force --deep --sign - "$APP"
 echo "Built $APP — run: open $APP"
