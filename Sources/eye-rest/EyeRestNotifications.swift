@@ -13,10 +13,15 @@ enum EyeRestNotifications {
         post(title: "Break over", body: "Back to work.")
     }
 
+    static func notifyTest() {
+        post(title: "Eye Rest test", body: "Notifications reach you. Break pings sound like this.")
+    }
+
     private static func post(title: String, body: String) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
+        content.sound = .default
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,

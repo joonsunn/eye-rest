@@ -38,6 +38,9 @@ struct EyeRestApp: App {
                 timer.skipBreak()
             }
             .disabled(timer.phase != .onBreak)
+            Button("Send test notification") {
+                EyeRestNotifications.notifyTest()
+            }
             Menu("Work length") {
                 ForEach(EyeRestSettings.workPresets, id: \.self) { minutes in
                     Button("\(minutes) min \(Int(settings.workDuration) == minutes * 60 ? "✓" : "")") {
