@@ -6,10 +6,11 @@ the Swift app is untouched.
 
 ## Build and test
 
-- `go test ./...`, `go vet ./...` (10 tests).
-- `./build-app.sh` assembles ad-hoc-signed `.build/EyeRestGo.app`.
-- Fast check: `EYE_REST_GO_DEBUG=1 EYE_REST_WORK_SECONDS=10 EYE_REST_BREAK_SECONDS=5 ./.build/EyeRestGo.app/Contents/MacOS/eye-rest-go` (runs the bundled binary with stderr attached).
-- First launch asks notification permission once, same as the Swift app.
+- `make build`, `make test`, `make vet`, `make fmt` (10 tests).
+- `make app` assembles ad-hoc-signed `.build/EyeRestGo.app`.
+- `make run` opens the built app. First launch asks notification permission once, same as the Swift app.
+- `make smoke` runs the bundled binary 25s with 10s/5s cycles and debug logging, then quits and prints the log.
+- `make clean` removes build output.
 
 ## How each Swift piece maps
 
