@@ -10,6 +10,7 @@ the Swift app is untouched.
 - `make app` assembles ad-hoc-signed `.build/EyeRestGo.app`.
 - `make run` opens the built app. First launch asks notification permission once, same as the Swift app.
 - `make smoke` runs the bundled binary 25s with 10s/5s cycles and debug logging, then quits and prints the log.
+- `make dist` builds the app and zips it as `.build/eye-rest-go-<version>-darwin-<arch>.zip`, ready to upload to a GitHub release. Override with `make dist VERSION=1.0 ARCH=arm64`.
 - `make clean` removes build output.
 
 ## How each Swift piece maps
