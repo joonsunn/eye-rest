@@ -19,6 +19,22 @@ the Swift app is untouched.
 - `make dist` builds the app and zips it as `.build/eye-rest-go-<version>-darwin-<arch>.zip`, ready to upload to a GitHub release. Override with `make dist VERSION=1.0 ARCH=arm64`.
 - `make clean` removes build output.
 
+## Quick start (correct setup)
+
+1. `make check`, then `make app`.
+2. Move `.build/EyeRestGo.app` to `/Applications` and open it from there. The login-item entry points at the bundle path, so set up autostart only once the app is in its final home.
+3. Grant the one-time notification permission when prompted.
+4. Toggle "Launch at login" in the menu. First toggle asks for Automation control of System Events; approve in System Settings, Privacy and Security, Automation. Toggling is idempotent: on twice (or off when absent) is a no-op, never a duplicate entry.
+5. If the toggle fails, check the Automation approval above; a Deny there can only be undone manually in Settings.
+
+## Uninstall
+
+1. Quit the app from its menu.
+2. Remove autostart: toggle "Launch at login" off before quitting, or delete the EyeRestGo entry under System Settings, General, Login Items. Headless: `osascript -e 'tell application "System Events" to delete login item "EyeRestGo"'`.
+3. Delete `/Applications/EyeRestGo.app`.
+4. Delete prefs: `rm -rf ~/Library/Application\ Support/EyeRestGo`.
+5. Optional: reset the notification permission: `tccutil reset Notifications com.local.eye-rest-go`.
+
 ## How each Swift piece maps
 
 - Menu bar: `getlantern/systray` (tray icon, title countdown, submenus, manual ✓ marks). No SwiftUI; all state mutations run on one goroutine fed by an action channel, the Go equivalent of `@MainActor`.

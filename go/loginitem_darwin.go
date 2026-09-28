@@ -50,15 +50,23 @@ func LoginItemEnabled() bool {
 	return false
 }
 
-// SetLoginItemEnabled adds or removes this bundle's login item.
+// SetLoginItemEnabled adds or removes this bundle's login item. Idempotent:
+// enabling twice (or disabling when absent) is a no-op, unlike a bare
+// osascript `make`, which would stack duplicate entries.
 func SetLoginItemEnabled(enabled bool) error {
 	if enabled {
+		if LoginItemEnabled() {
+			return nil
+		}
 		bundle := appBundlePath()
 		if bundle == "" {
 			return errOutsideBundle
 		}
 		_, err := osascript(`tell application "System Events" to make login item at end with properties {path:"` + bundle + `", hidden:false}`)
 		return err
+	}
+	if !LoginItemEnabled() {
+		return nil
 	}
 	_, err := osascript(`tell application "System Events" to delete login item "` + loginItemName + `"`)
 	return err
