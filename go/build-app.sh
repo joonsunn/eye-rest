@@ -4,7 +4,9 @@
 # app's notifications ignored. Only needs Go + clang (CLT), no Xcode IDE.
 set -eu
 cd "$(dirname "$0")"
-go build -o .build/EyeRestGo.app/Contents/MacOS/eye-rest-go .
+# cgo links -lobjc twice (systray's .m plus ours); silence the benign warning.
+# Env var, not #cgo: Go's flag allowlist rejects -Wl in source directives.
+export CGO_LDFLAGS="-Wl,-no_warn_duplicate_libraries"
 APP=".build/EyeRestGo.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"

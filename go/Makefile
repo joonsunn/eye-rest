@@ -1,5 +1,10 @@
 .PHONY: build test vet fmt app run smoke dist check clean
 
+# cgo links -lobjc twice (systray's .m plus ours); the warning is benign
+# noise, so silence it. Env var, not #cgo: Go's flag allowlist rejects -Wl
+# in source directives but trusts the invoking environment.
+export CGO_LDFLAGS = -Wl,-no_warn_duplicate_libraries
+
 build:
 	go build -o .build/eye-rest-go .
 
