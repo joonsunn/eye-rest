@@ -4,6 +4,12 @@ Same product (20-20-20 timer, tray countdown, break pings, launch at login),
 zero Swift, zero Xcode IDE. Lives on the `spike/go` branch for comparison;
 the Swift app is untouched.
 
+## Prerequisites
+
+- Go 1.27+ and the Xcode CLT (clang). Verify with `make check`.
+- Pure-Go builds need no Apple toolchain, but this app compiles ObjC via cgo (tray icon plus the notification bridge), so clang is mandatory. A missing clang fails the build loudly, never silently.
+- Most dev machines already qualify: Homebrew refuses to work without the CLT, and macOS's git shim prompts for it on first clone.
+
 ## Build and test
 
 - `make build`, `make test`, `make vet`, `make fmt` (10 tests).

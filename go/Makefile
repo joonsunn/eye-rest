@@ -1,4 +1,4 @@
-.PHONY: build test vet fmt app run smoke dist clean
+.PHONY: build test vet fmt app run smoke dist check clean
 
 build:
 	go build -o .build/eye-rest-go .
@@ -27,6 +27,11 @@ ARCH ?= $(shell go env GOARCH)
 dist: app
 	cd .build && ditto -c -k --keepParent EyeRestGo.app eye-rest-go-$(VERSION)-darwin-$(ARCH).zip
 	ls -la .build/*.zip
+
+check:
+	@command -v go >/dev/null || (echo "missing: Go toolchain — https://go.dev/dl/" && false)
+	@command -v clang >/dev/null || (echo "missing: clang — run: xcode-select --install" && false)
+	@go version && clang --version | head -1
 
 clean:
 	go clean
