@@ -2,6 +2,8 @@
 
 Menu-bar macOS app for 20-20-20 eye breaks. 20-minute countdown, break ping, 20-second rest, repeat. Local only: no network, no analytics, durations in UserDefaults.
 
+Experimental Go port (no Swift, no Xcode IDE) lives in `go/`; see `go/README.md`.
+
 ## Requirements
 
 - macOS 13+, Swift 6 toolchain (`xcode-select --install` suffices).
